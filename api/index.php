@@ -13,14 +13,24 @@ if (is_dir(sys_get_temp_dir())) {
     ini_set('session.save_path', sys_get_temp_dir());
 }
 
+$routedPath = $_GET['__path'] ?? null;
+if (!is_string($routedPath)) {
+    $routedPath = '';
+} else {
+    unset($_GET['__path']);
+}
+
 $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
-$path = parse_url($requestUri, PHP_URL_PATH);
+$path = $routedPath !== '' ? $routedPath : parse_url($requestUri, PHP_URL_PATH);
 if ($path === null || $path === false) {
     $path = '/';
 }
 
 $path = rawurldecode($path);
 $path = str_replace("\0", '', $path);
+if ($path !== '' && $path[0] !== '/') {
+    $path = '/' . $path;
+}
 
 if ($path === '' || $path === '/') {
     $path = '/index.php';
@@ -59,6 +69,16 @@ if ($ext !== 'php') {
     http_response_code(404);
     echo 'Not found.';
     exit;
+}
+
+if ($targetReal === __FILE__) {
+    $indexReal = realpath($projectRoot . DIRECTORY_SEPARATOR . 'index.php');
+    if ($indexReal === false) {
+        http_response_code(500);
+        echo 'Server misconfiguration.';
+        exit;
+    }
+    $targetReal = $indexReal;
 }
 
 chdir(dirname($targetReal));
