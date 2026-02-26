@@ -1,82 +1,86 @@
-# Treakers — Sneaker E‑Commerce Demo (PHP + SQLite)
+# Treakers — Aston University Year 2 Team Project (Team 27)
 
 ![Treakers Logo](Assets/Images/Treakers%20Logo.png)
 
-Portfolio-ready demo of a multi‑page PHP e‑commerce site (browse, cart, checkout, orders, reviews) with an admin dashboard. It runs out-of-the-box on a seeded **SQLite `.db`** and is deployable on **Vercel** (serverless-friendly demo mode).
+Treakers is a sneaker e-commerce web application built as part of our Aston University BSc (Year 2) Team Project (Team 27). The app includes a customer storefront and an admin dashboard.
 
-## Live Demo
-- Vercel: _add your link here_ (e.g. `https://your-project.vercel.app`)
+## Live site
+- https://treakers-demo.vercel.app/
 
-## Demo Accounts
+## Demo accounts
 - User: `demo@example.com` / `demo1234`
 - Admin: `admin@example.com` / `admin1234`
 
 ## Features
-**Shop**
-- Categories + product pages
-- Search autocomplete (AJAX)
-- Cart + checkout (PayPal optional; disabled by default)
-- Orders, order tracking, returns (demo)
-- Product reviews (one review per order item)
+### Shop
+- Browse categories and products
+- Product search autocomplete (AJAX)
+- Basket + checkout flow (PayPal optional)
+- Orders and product reviews
 
-**Admin**
-- Dashboard metrics
+### Admin
+- Admin dashboard
 - Manage categories, products, users, and orders
-- Demo-safe images: use an `http(s)` **Image URL** (uploads don’t persist on Vercel)
+- Product/category images via `http(s)` image URL (uploads don’t persist on Vercel)
 
-## Tech Stack
+## How it works (high level)
+- The UI is server-rendered with PHP pages (for example `index.php` and pages under `other_pages/`).
+- Shared helpers live in `Assets/Functions/` and the database connection/seed logic lives in `Assets/Database/connectdb.php`.
+- On Vercel, `vercel.json` routes requests to `api/index.php`. The router maps the requested path to the matching PHP file and executes it. Static files (CSS/JS/images) are served directly.
+
+## Tech stack
 - PHP (server-rendered pages)
-- SQLite (demo mode)
+- SQLite (demo database)
 - Bootstrap + custom CSS
 - jQuery + Swiper
-- Vercel deployment via `vercel-php` runtime
+- Vercel via the `vercel-php` runtime
 
 ## Screenshots
 ![Login](<Assets/Images/Shoe 1 (Login).png>)
 ![Registration](<Assets/Images/Shoe 2 (Registration).png>)
 
-## Getting Started (Local)
-### 1) Requirements
+## Run locally
+### Requirements
 - PHP 8+ recommended
 
-### 2) Run the site (SQLite demo)
-From this folder:
+### Start
+From the repo root:
 
-`php -S localhost:8000`
+```sh
+php -S localhost:8000
+```
 
-Then open:
-- `http://localhost:8000`
+Then open `http://localhost:8000`.
 
 On first load it creates `data/treakers-demo.db` using `data/sqlite_demo.sql` and seeds demo data.
 
 Reset demo data:
 - Delete `data/treakers-demo.db` and refresh the page.
 
-## Deployment (Vercel)
+## Deploy to Vercel
 This repo includes:
-- `vercel.json` (routes all requests to PHP)
-- `api/index.php` (front controller for serverless)
+- `vercel.json` (routes requests to the PHP router)
+- `api/index.php` (serverless front controller)
 
-### Steps
+Steps:
 1. Push this repo to GitHub.
-2. In Vercel, click **Add New → Project** and import the repo (preset: **Other**).
+2. In Vercel, click **Add New → Project** and import the repo.
 3. Deploy.
 
 Notes:
-- On Vercel the SQLite database is stored in `/tmp/treakers-demo.db` (serverless temp storage), so data may reset on cold starts — perfect for a portfolio demo.
-- For images on Vercel, prefer the **Image URL** fields in the admin dashboard.
+- On Vercel the SQLite database is stored in the serverless temp directory (`/tmp/treakers-demo.db`), so data may reset between invocations.
+- For images on Vercel, use the image URL fields in the admin dashboard.
 
-## Environment Variables
-All optional for demo mode:
-- `DB_DRIVER=sqlite`
+## Environment variables
+All optional:
+- `DB_DRIVER` (`sqlite` or `mysql`, default: `sqlite`)
 - `SQLITE_PATH` (override the SQLite path locally)
 - `PAYPAL_CLIENT_ID` (enables PayPal buttons)
 
-Optional MySQL mode (not required for the portfolio demo):
-- `DB_DRIVER=mysql`
+MySQL (only if `DB_DRIVER=mysql`):
 - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
 
-## Project Structure (High Level)
+## Project structure (high level)
 - `index.php` — Landing page
 - `other_pages/` — Pages (products, basket, login, admin, etc.)
 - `Assets/` — CSS/JS/images + DB connector + shared functions
